@@ -64,7 +64,19 @@ void setup() {
 
 
 //move servos
-void moveServo(bool isRight, bool isUp){
+  //if note even move left
+  //if note odd move right
+  //if note < 4 move up
+  //if note >3 move down
+void moveServo(int note){
+
+  bool isRight = true; bool isUp = false;
+  if (note % 2 == 0){
+    isRight = false;
+  }
+  if (note < 4){
+    isUp = true;
+  }
   int origPos = 0; //where the servo arm starts
   if (isUp){ //moveup
     if (isRight){
@@ -151,6 +163,7 @@ void appendRec(){
     }
     int currentNote = notes[counter]-1;
     tone(buzzer, hz[currentNote]);
+    moveServo(currentNote);
     delay(500);        // ...for 1 sec
     noTone(buzzer);     // Stop sound...
     counter++;
@@ -163,9 +176,9 @@ void playRec(){
       if (stop_button == false){
         int currentNote = notes[i]-1;
         tone(buzzer, hz[currentNote]);
+        moveServo(currentNote);
         delay(500);        // ...for 1 sec
         noTone(buzzer);     // Stop sound...
-        Serial.println(notes[i]);
       }
   }
 }
@@ -208,6 +221,7 @@ void rec(){
     }
     int currentNote = notes[counter]-1;
     tone(buzzer, hz[currentNote]);
+    moveServo(currentNote);
     delay(500);        // ...for 1 sec
     noTone(buzzer);     // Stop sound...
     counter++;
@@ -249,6 +263,7 @@ void playLive(){
         }
       }
       tone(buzzer, hz[currentNote]);
+      moveServo(currentNote);
       delay(500);        // ...for 1 sec
       noTone(buzzer);     // Stop sound...
    }
