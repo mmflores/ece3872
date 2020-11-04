@@ -1,13 +1,19 @@
 #include <Adafruit_VL53L0X.h>
+#include <Servo.h>
 
+//hardware components
+Adafruit_VL53L0X lox = Adafruit_VL53L0X(); //lidar sensor
+Servo servoL; //left servo
+Servo servoR; //right servo
 
 //globals 
-Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 int notes[40];
 double hz[8] = {110.0, 123.471, 130.813, 146.832, 164.814, 174.614, 195.998, 207.652};
 const int buzzer = 9; //buzzer to arduino pin 9
 bool stop_button = true;
 bool play_Live = true;
+int posR = 0;
+int posL = 0;
 
 const int NUM_BUTTONS = 6;
 enum button_enum {
@@ -51,7 +57,47 @@ void setup() {
       pinMode (pins[i], INPUT_PULLUP);
       pushed[i] = false;
     }
-    
+  //init servo pins
+  servoR.attach(10); //right servo pin
+  servoL.attach(11); //left servo pin
+}
+
+
+//move servos
+void moveServo(bool isRight, bool isUp){
+  int origPos = 0; //where the servo arm starts
+  if (isUp){ //moveup
+    if (isRight){
+      origPos = posR; //set starting pos
+      for (posR; posR <= origPos + 30; posR += 1) { // goes from origPos degrees to origPos + 30 degrees
+        servoR.write(posR);              
+        delay(15);                       
+      }
+    }
+    else{ //isleft arm
+      origPos = posL; //set starting pos
+      for (posL; posL <= origPos + 30; posL += 1) { // goes from origPos degrees to origPos + 30 degrees
+        servoL.write(posL);              
+        delay(15);                       
+      }
+    }
+  }
+  else{//movedown
+    if (isRight){
+      origPos = posR; //set starting pos
+      for (posR; posR >= origPos - 30; posR -= 1) { // goes from origPos degrees to origPos - 30 degrees
+        servoR.write(posR);              
+        delay(15);                       
+      }
+    }
+    else{ //isleft arm
+      origPos = posL; //set starting pos
+      for (posL; posL >= origPos - 30; posL -= 1) { // goes from origPos degrees to origPos - 30 degrees
+        servoL.write(posL);              
+        delay(15);                       
+      }
+    }
+  }
 }
 
 //erase recording
